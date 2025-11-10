@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Match The Dot — Link the grid. Beat the levels.</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Match The Dot is a sleek grid-puzzle game: flood adjacent cells, hit every target color, climb the leaderboard, and challenge yourself with Blitz and Daily Puzzles." />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Match The Dot" />
+  <meta property="og:description" content="A glossy, minimalist grid-puzzle. Levels, Blitz Mode, and Daily Puzzle." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="assets/og-image.png" />
+  <meta property="og:url" content="https://yourdomain.com" />
+
+  <!-- Favicon -->
+  <link rel="icon" href="assets/favicon.png" />
+
+  <style>
+    :root{
+      --bg1:#0f172a; /* slate-900 */
+      --bg2:#0b2a45; /* deep blue */
+      --brand:#facc15; /* yellow */
+      --card: rgba(255,255,255,0.08);
+      --muted: rgba(255,255,255,0.75);
+      --ring: rgba(250,204,21,0.5);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu;
+      color:#fff; background: radial-gradient(1200px 600px at 20% 0%, #113a63 0%, transparent 60%),
+                  radial-gradient(800px 500px at 80% 20%, #0e2238 0%, transparent 60%),
+                  linear-gradient(180deg, var(--bg1), var(--bg2));
+    }
+    a{color:inherit; text-decoration:none}
+    .container{max-width:1100px; margin:0 auto; padding:24px}
+    header{
+      display:flex; align-items:center; justify-content:space-between; gap:16px; padding:12px 0;
+    }
+    .brand{
+      display:flex; align-items:center; gap:12px;
+    }
+    .brand img{width:44px; height:44px; border-radius:10px; object-fit:cover; box-shadow:0 6px 20px rgba(0,0,0,.35)}
+    .brand h1{margin:0; font-size:20px; letter-spacing:.12em; font-weight:800}
+    .cta{
+      display:flex; gap:10px; flex-wrap:wrap;
+    }
+    .btn{
+      padding:10px 14px; background:var(--card); border:1px solid rgba(255,255,255,.12);
+      border-radius:12px; backdrop-filter: blur(6px); transition:transform .15s, border-color .15s, box-shadow .15s;
+    }
+    .btn:hover{transform:translateY(-1px); border-color:var(--ring); box-shadow:0 0 0 6px rgba(250,204,21,0.12)}
+    .btn.primary{background:linear-gradient(135deg, #22c55e, #16a34a); border-color:transparent}
+    .hero{
+      display:grid; grid-template-columns:1.2fr 1fr; gap:28px; align-items:center; padding:40px 0 10px;
+    }
+    .title{
+      line-height:1.05; margin:0 0 10px;
+      text-shadow:0 8px 28px rgba(0,0,0,.4);
+    }
+    .title .big{display:block; font-size:56px; font-weight:900; letter-spacing:.12em}
+    .title .big + .big{margin-top:-10px}
+    .title .small{font-size:18px; letter-spacing:.35em; font-weight:300}
+    .tagline{color:var(--muted); margin:6px 0 18px}
+    .hero-art{
+      position:relative; min-height:240px; border-radius:20px; overflow:hidden; border:1px solid rgba(255,255,255,.08);
+      background: url('assets/hero-grid.png') center/cover no-repeat, var(--card);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.04), 0 12px 40px rgba(0,0,0,.35);
+    }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; background:rgba(250,204,21,.12);
+      border:1px solid rgba(250,204,21,.35); color:#fff; font-weight:600;
+    }
+    .grid{
+      margin-top:28px; display:grid; grid-template-columns:repeat(3, 1fr); gap:16px;
+    }
+    .card{
+      border-radius:16px; background:var(--card); padding:18px; border:1px solid rgba(255,255,255,.08);
+      min-height:140px; display:flex; flex-direction:column; gap:10px; backdrop-filter: blur(4px);
+    }
+    .card h3{margin:0; font-size:18px}
+    .muted{color:var(--muted)}
+    .rules{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px}
+    .list{margin:0; padding-left:20px}
+    .list li{margin:6px 0}
+    .badges{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px}
+    .badge{height:46px; border-radius:10px; overflow:hidden; border:1px solid rgba(255,255,255,.08); background:var(--card)}
+    .table{width:100%; border-collapse:collapse; overflow:hidden; border-radius:12px; border:1px solid rgba(255,255,255,.08)}
+    .table th,.table td{padding:10px 12px; text-align:left}
+    .table thead{background:rgba(0,0,0,.28)}
+    .table th{color:var(--brand)}
+    .table tr:nth-child(2n){background:rgba(255,255,255,.05)}
+    .footer{
+      margin:40px 0 20px; display:flex; flex-wrap:wrap; gap:12px; justify-content:space-between; align-items:center; color:var(--muted);
+      border-top:1px dashed rgba(255,255,255,.15); padding-top:16px;
+    }
+    .hint{font-size:13px}
+    .em{color:var(--brand); font-weight:700}
+    @media (max-width: 980px){
+      .hero{grid-template-columns:1fr; gap:16px}
+      .grid{grid-template-columns:1fr}
+      .rules{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="brand">
+        <img src="assets/icon-64.png" alt="Match The Dot logo" />
+        <h1>MATCH THE DOT</h1>
+      </div>
+      <div class="cta">
+        <a class="btn" href="#features">Features</a>
+        <a class="btn" href="#modes">Game Modes</a>
+        <a class="btn primary" href="#download">Get the Game</a>
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div>
+        <h2 class="title">
+          <span class="big">MATCH</span>
+          <span class="small">THE</span>
+          <span class="big">DOT</span>
+        </h2>
+        <p class="tagline">A sleek, minimalist grid-puzzle where you flood adjacent cells to match each tile’s target color.</p>
+        <span class="pill">✨ Levels • ⚡ Blitz Mode • 📅 Daily Puzzle</span>
+
+        <div class="grid" id="features">
+          <div class="card">
+            <h3>Elegant Core</h3>
+            <p class="muted">Tap a starting cell, paint adjacent tiles (up/down/left/right), and match the tiny dot’s target color on each cell.</p>
+          </div>
+          <div class="card">
+            <h3>Progression</h3>
+            <p class="muted">Multiple difficulties (Easy → Expert), smart unlocks, and a clean, satisfying completion flow.</p>
+          </div>
+          <div class="card">
+            <h3>Premium Polish</h3>
+            <p class="muted">Fluid animations, glossy gradients, crisp typography, and responsive layouts that feel great.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-art" aria-label="Game artwork / grid preview"></div>
+    </section>
+
+    <!-- Modes -->
+    <section id="modes" class="grid" style="margin-top:24px">
+      <div class="card">
+        <h3>🎯 Levels (Campaign)</h3>
+        <p class="muted">Tackle handcrafted levels grouped by grid size and difficulty. Unlock new stages by clearing previous ones—or watch a rewarded ad to skip ahead if you’re stuck.</p>
+      </div>
+      <div class="card">
+        <h3>⚡ Blitz Mode</h3>
+        <p class="muted">Race against the clock (1/3/5 mins). Levels get tougher as your score climbs. Beat your high score!</p>
+      </div>
+      <div class="card">
+        <h3>📅 Daily Puzzle</h3>
+        <p class="muted">A fresh puzzle every UTC day. Limited attempts, shared seed, fair challenge. Come back tomorrow for more.</p>
+      </div>
+    </section>
+
+    <!-- How to Play -->
+    <section class="card" style="margin-top:24px">
+      <h3>🧩 How to Play</h3>
+      <div class="rules">
+        <ul class="list">
+          <li>The goal is to assign the <b>target color</b> to each cell.</li>
+          <li>The large square shows the <b>current color</b>; the tiny dot shows the <b>target color</b>.</li>
+          <li>Paint spreads to the four adjacent cells: up, down, left, right.</li>
+        </ul>
+        <ul class="list">
+          <li>Complete all targets to clear the level.</li>
+          <li>Undo and reset are available if you need a fresh start.</li>
+          <li>Enjoy the flow. That’s it 🙂</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Leaderboard (example) -->
+    <section class="card" style="margin-top:24px">
+      <h3>🏆 Leaderboard</h3>
+      <p class="muted">Compete on total levels solved or daily puzzle speed. (Sample layout)</p>
+      <div style="overflow:hidden; margin-top:10px">
+        <table class="table" aria-label="Leaderboard">
+          <thead>
+            <tr><th>#</th><th>Name</th><th>Levels</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>Aarav</td><td>120</td></tr>
+            <tr><td>2</td><td>Isha</td><td>110</td></tr>
+            <tr><td>3</td><td>Ravi</td><td>100</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Tech / Privacy -->
+    <section class="grid" style="margin-top:24px">
+      <div class="card">
+        <h3>⚙️ Tech</h3>
+        <p class="muted">Built with Expo + React Native, Reanimated, and SQLite. Ads via Google Mobile Ads. Backend uses HMAC-signed requests and per-device tokens.</p>
+      </div>
+      <div class="card">
+        <h3>🔒 Privacy & Fair Play</h3>
+        <p class="muted">We don’t require personal accounts. Daily puzzle data and leaderboards are sent securely; requests are signed to prevent tampering.</p>
+      </div>
+      <div class="card" id="download">
+        <h3>⬇️ Get the Game</h3>
+        <div class="badges">
+          <a class="badge" href="https://play.google.com/store/apps/details?id=com.your.package" aria-label="Get it on Google Play">
+            <img src="assets/google-play-badge.png" alt="Google Play badge" style="height:100%" />
+          </a>
+          <!-- Optional iOS later
+          <a class="badge" href="#" aria-label="Download on the App Store">
+            <img src="assets/app-store-badge.png" alt="App Store badge" style="height:100%" />
+          </a> -->
+        </div>
+        <p class="hint">Internal testing builds may show test ads. Live builds use compliant ad units.</p>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <span>© <span class="em">Match The Dot</span> — All rights reserved.</span>
+      <span class="hint">
+        Need support? <a href="mailto:support@yourdomain.com" class="em">colorlessrainbowwww@google.com</a>
+      </span>
+    </footer>
+  </div>
+</body>
+</html>
